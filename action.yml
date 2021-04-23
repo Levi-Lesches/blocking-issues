@@ -2,4 +2,4 @@ name: "Blocking Issues"
 description: "Labels issues and PRs when they're blocked"
 runs:
   using: 'node12'
-  main: 'index.js'
+  main: 'src/index.js'
