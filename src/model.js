@@ -26,6 +26,7 @@ async function update(pr) {
 			console.log("No blocking issues -- removing comment");
 			await github.deleteComment(oldComment);
 		}
+		await github.removeLabel(pr.number, "blocked");
 		return;
 	}
 
