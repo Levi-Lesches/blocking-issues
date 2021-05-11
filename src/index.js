@@ -1,7 +1,7 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 
-const dependencies = require('../dependencies.js');
+const dependencies = require('./dependency.js');
 
 try {
 	// const octokit = github.getOctokit(github.token);
