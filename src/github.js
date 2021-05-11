@@ -10,12 +10,15 @@ function getCurrentIssueNumber() {
 }
 
 async function getIssue(number) {
+	console.log("Details:");
+	console.log(github.context.repo.owner);
+	console.log(github.context.repo.name);
 	return await octokit.rest.issues.get({
 		owner: github.context.repo.owner,
 		repo: github.context.repo.name,
 		issue_number: number,
 	}).catch(error => {
-		console.log(`Failed to get issue ${number}`);
+		console.log(`Failed to get issue #${number}`);
 		core.setFailed(error);
 	});
 }
