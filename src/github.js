@@ -2,9 +2,8 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 
 const token = core.getInput("token");
-console.log(process.env);
-console.log(process.env.GITHUB_TOKEN);
-const octokit = github.getOctokit({token: process.env.GITHUB_TOKEN})
+console.log(token);
+const octokit = github.getOctokit({token: token});
 
 function getCurrentIssueNumber() {
 	return github.context.issue.number;

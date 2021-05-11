@@ -1,5 +1,10 @@
 name: "Blocking Issues"
 description: "Labels issues and PRs when they're blocked"
+inputs: 
+  token: 
+    description: "The GitHub token to use."
+    required: false
+    default: ${{ github.token }}
 runs:
   using: 'node12'
   main: 'src/index.js'
