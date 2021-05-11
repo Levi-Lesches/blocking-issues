@@ -63,7 +63,7 @@ async function rewriteComment(id, text) {
 
 async function writeComment(issueNumber, text) {
 	console.log(`Getting comments for PR ${issueNumber}`);
-	comments = await getComments();
+	comments = await getComments(issueNumber);
 	console.log(comments);
 	for (comment of comments) {
 		if (comment.body.endsWith(utils.signature)) {
