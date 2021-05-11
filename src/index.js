@@ -3,10 +3,15 @@ const model = require('./model.js');
 
 async function main() {
 	try {
-		// const octokit = github.getOctokit(github.token);
-
-		console.log("Hello, World!");
-		console.log(await model.getCurrentIssue());
+		console.log("Getting issue");
+		const issue = await model.getCurrentIssue();
+		console.log(issue);
+		if (issue.state === 'open') {
+			model.update(issue);
+		} else {
+			// get blocked PRs
+			// reprocess each one (call update on it)
+		}
 	} catch (error) {
 		core.setFailed(error.message);
 	}
