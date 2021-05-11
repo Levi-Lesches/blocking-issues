@@ -6,8 +6,13 @@ async function main() {
 		console.log("Getting issue");
 		const issue = await model.getCurrentIssue();
 		console.log(issue);
+
 		if (issue.state === 'open') {
-			model.update(issue);
+			console.log("Analyzing current issue/PR");
+			const isReady = await model.update(issue);
+
+			console.log(`Is ready? ${isReady}`);
+			if (!isReady) core.setFailed("PR is blocked")
 		} else {
 			// get blocked PRs
 			// reprocess each one (call update on it)
