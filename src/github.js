@@ -12,10 +12,10 @@ function getCurrentIssueNumber() {
 async function getIssue(number) {
 	console.log("Details:");
 	console.log(github.context.repo.owner);
-	console.log(github.context.repo.name);
+	console.log(github.context.repo.repo);
 	return await octokit.rest.issues.get({
 		owner: github.context.repo.owner,
-		repo: github.context.repo.name,
+		repo: github.context.repo.repo,
 		issue_number: number,
 	}).catch(error => {
 		console.log(`Failed to get issue #${number}`);
@@ -26,7 +26,7 @@ async function getIssue(number) {
 async function writeComment(issueNumber, text) {
 	await octokit.rest.issues.createComment({
 		owner: github.context.repo.owner,
-		repo: github.context.repo.name,
+		repo: github.context.repo.repo,
 		issue_number: number,
 		body: text,
 	});
@@ -35,7 +35,7 @@ async function writeComment(issueNumber, text) {
 async function applyLabel(issueNumber, label) {
 	await octokit.rest.issues.addLabels({
 		owner: github.context.repo.owner,
-		repo: github.context.repo.name,
+		repo: github.context.repo.repo,
 		issue_number: issueNumber,
 		labels: label
   });
@@ -44,7 +44,7 @@ async function applyLabel(issueNumber, label) {
 async function removeLabel(issueNumber, label) {
 	await octokit.rest.issues.addLabels({
 		owner: github.context.repo.owner,
-		repo: github.context.repo.name,
+		repo: github.context.repo.repo,
 		issue_number: issueNumber,
 		name: label
   });
