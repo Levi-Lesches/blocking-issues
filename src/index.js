@@ -14,6 +14,7 @@ async function main() {
 			console.log(`Is ready? ${isReady}`);
 			if (!isReady) core.setFailed("PR is blocked")
 		} else {
+			console.log("Issue is closed. Checking for blocked PRs");
 			// get blocked PRs
 			// reprocess each one (call update on it)
 		}
