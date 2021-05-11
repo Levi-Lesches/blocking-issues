@@ -36,9 +36,10 @@ async function update(pr) {
 	await github.writeComment(pr.number, commentText);
 	console.log("Comment written");
 
-	console.log(`Applying label: ${openIssues.length == 0}`);
-	if (openIssues.length == 0) await github.removeLabel(pr.number, "blocked");
-	else await github.applyLabel(pr.number, "blocked");
+	const isBlocked = openIssues.length > 0;
+	console.log(`Applying label? ${isBlocked}`);
+	if (isBlocked) await github.applyLabel(pr.number, "blocked");
+	else await github.removeLabel(pr.number, "blocked");
 
 	return openIssues.length == 0;
 }
