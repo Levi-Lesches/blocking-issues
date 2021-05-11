@@ -3,7 +3,7 @@ const github = require('@actions/github');
 
 const token = core.getInput("token");
 console.log(token);
-const octokit = github.getOctokit({token: token});
+const octokit = github.getOctokit(token);
 
 function getCurrentIssueNumber() {
 	return github.context.issue.number;
