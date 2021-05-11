@@ -1,3 +1,4 @@
+const core = require('@actions/core');
 const github = require('@actions/github');
 
 const octokit = github.getOctokit({token: github.token})
@@ -11,6 +12,9 @@ async function getIssue(number) {
 		owner: github.context.repo.owner,
 		repo: github.context.repo.name,
 		issue_number: number,
+	}).catch(error => {
+		console.log(`Failed to get issue ${number}`);
+		core.setFailed(error.message);
 	});
 }
 
@@ -20,7 +24,7 @@ async function writeComment(issueNumber, text) {
 		repo: github.context.repo.name,
 		issue_number: number,
 		body: text,
-	})
+	});
 }
 
 async function applyLabel(issueNumber, label) {
