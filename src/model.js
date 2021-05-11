@@ -6,7 +6,9 @@ async function getCurrentIssue() {
 }
 
 async function initLabels() {
+	console.log("Getting labels");
 	const labels = await github.getLabels();
+	console.log(labels);
 	var hasBlockedLabel = false;
 	for (label of labels) {
 		if (label.name === utils.blockedLabel.name) hasBlockedLabel = true;
