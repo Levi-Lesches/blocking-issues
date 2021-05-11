@@ -14,7 +14,7 @@ async function getIssue(number) {
 		issue_number: number,
 	}).catch(error => {
 		console.log(`Failed to get issue ${number}`);
-		core.setFailed(error.message);
+		core.setFailed(error);
 	});
 }
 
