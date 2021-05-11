@@ -24,7 +24,7 @@ async function update(pr) {
 		const oldComment = await github.getCommentID(pr.number);
 		if (oldComment) {
 			console.log("No blocking issues -- removing comment");
-			await github.deleteComment();
+			await github.deleteComment(oldComment);
 		}
 		return;
 	}
