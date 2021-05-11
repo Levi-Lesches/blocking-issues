@@ -4,7 +4,8 @@ const model = require('./model.js');
 async function main() {
 	try {
 		console.log("Getting issue");
-		const issue = await model.getCurrentIssue();
+		var issue = await model.getCurrentIssue();
+		issue = issue.data;
 		console.log(issue);
 
 		if (issue.state === 'open') {
