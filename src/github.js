@@ -13,7 +13,7 @@ async function getIssue(number) {
 	console.log("Details:");
 	console.log(github.context.repo.owner);
 	console.log(github.context.repo.repo);
-	return await octokit.rest.issues.get({
+	var json = await octokit.rest.issues.get({
 		owner: github.context.repo.owner,
 		repo: github.context.repo.repo,
 		issue_number: number,
@@ -21,6 +21,7 @@ async function getIssue(number) {
 		console.log(`Failed to get issue #${number}`);
 		core.setFailed(error);
 	});
+	return json.data;
 }
 
 async function writeComment(issueNumber, text) {
