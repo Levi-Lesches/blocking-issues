@@ -20,7 +20,7 @@ async function update(pr) {
 
 	console.log("Writing comment");
 	const commentText = utils.getCommentText(blockingIssueNumbers, openIssues);
-	await github.writeComment(commentText);
+	await github.writeComment(pr.number, commentText);
 	console.log("Comment written");
 
 	console.log(`Applying label: ${openIssues.length == 0}`);
