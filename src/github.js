@@ -56,7 +56,7 @@ async function applyLabel(issueNumber, label) {
 		owner: github.context.repo.owner,
 		repo: github.context.repo.repo,
 		issue_number: issueNumber,
-		labels: label
+		labels: [label]
   });
 }
 
