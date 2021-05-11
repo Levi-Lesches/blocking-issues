@@ -1,10 +1,5 @@
 name: "Blocking Issues"
 description: "Labels issues and PRs when they're blocked"
-inputs: 
-  token: 
-    description: "The GitHub token. Defaults to ${{ secrets.GITHUB_TOKEN }}"
-    required: false
-    default: ${{ secrets.GITHUB_TOKEN }}
 runs:
   using: 'node12'
   main: 'src/index.js'
