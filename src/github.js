@@ -44,11 +44,13 @@ async function getIssue(number) {
 }
 
 async function getComments(issueNumber) {
+	console.log(`Getting comments for PR ${issueNumber}`);
 	var json = await octokit.rest.issues.createComment({
 		owner: github.context.repo.owner,
 		repo: github.context.repo.repo,
 		issue_number: issueNumber,
 	});
+	console.log(json);
 	return json.data;
 }
 
@@ -62,7 +64,6 @@ async function rewriteComment(id, text) {
 }
 
 async function writeComment(issueNumber, text) {
-	console.log(`Getting comments for PR ${issueNumber}`);
 	comments = await getComments(issueNumber);
 	console.log(comments);
 	for (comment of comments) {
