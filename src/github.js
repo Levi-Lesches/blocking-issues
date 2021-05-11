@@ -28,7 +28,7 @@ async function writeComment(issueNumber, text) {
 	await octokit.rest.issues.createComment({
 		owner: github.context.repo.owner,
 		repo: github.context.repo.repo,
-		issue_number: number,
+		issue_number: issueNumber,
 		body: text,
 	});
 }
