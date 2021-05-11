@@ -1,5 +1,6 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
+const utils = require("./utils.js");
 
 const token = core.getInput("token");
 console.log(token);
@@ -42,7 +43,32 @@ async function getIssue(number) {
 	return json.data;
 }
 
+async function getComments(issueNumber) {
+	var json = await octokit.rest.issues.createComment({
+		owner: github.context.repo.owner,
+		repo: github.context.repo.repo,
+		issue_number: issueNumber,
+	});
+	return json.data;
+}
+
+async function rewriteComment(id, text) {
+	await octokit.rest.issues.updateComment({
+		owner: github.context.repo.owner,
+		repo: github.context.repo.repo,
+		comment_id: id,
+		body: text,
+	});
+}
+
 async function writeComment(issueNumber, text) {
+	comments = await getComments();
+	for (comment of comments) {
+		if (comment.body.endsWith(utils.signature)) {
+			return await rewriteComment(comment.id, text);
+		}
+	}
+
 	await octokit.rest.issues.createComment({
 		owner: github.context.repo.owner,
 		repo: github.context.repo.repo,

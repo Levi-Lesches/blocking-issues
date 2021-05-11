@@ -27,3 +27,8 @@ async function main() {
 }
 
 main()
+
+/* TODO: 
+- rewrite comment instead of adding new one each time
+- support closed issues
+*/
