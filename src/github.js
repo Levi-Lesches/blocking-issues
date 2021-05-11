@@ -62,9 +62,12 @@ async function rewriteComment(id, text) {
 }
 
 async function writeComment(issueNumber, text) {
+	console.log(`Getting comments for PR ${issueNumber}`);
 	comments = await getComments();
+	console.log(comments);
 	for (comment of comments) {
 		if (comment.body.endsWith(utils.signature)) {
+			console.log(`Found old comment (id ${comment.id}). Updating...`);
 			return await rewriteComment(comment.id, text);
 		}
 	}
