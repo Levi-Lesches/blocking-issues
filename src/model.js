@@ -5,6 +5,18 @@ async function getCurrentIssue() {
 	return await github.getIssue(await github.getCurrentIssueNumber());
 }
 
+async function initLabels() {
+	const labels = await github.getLabels();
+	var hasBlockedLabel = false;
+	for (label of labels) {
+		if (label.name === utils.blockedLabel.name) hasBlockedLabel = true;
+	}
+	if (!hasBlockedLabel) {
+		console.log("Creating label");
+		await github.createLabel(utils.blockedLabel);
+	}
+}
+
 async function update(pr) {
 	const blockingIssueNumbers = utils.getBlockingIssues(pr.body);
 	if (blockingIssueNumbers.length == 0) return;
@@ -31,6 +43,7 @@ async function update(pr) {
 }
 
 module.exports = {
+	initLabels,
 	getCurrentIssue,
 	update,
 }

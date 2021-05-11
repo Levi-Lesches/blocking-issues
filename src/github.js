@@ -9,6 +9,23 @@ function getCurrentIssueNumber() {
 	return github.context.issue.number;
 }
 
+async function getLabels() {
+	return await octokit.rest.issues.listLabelsForRepo({
+		owner: github.context.repo.owner,
+		repo: github.context.repo.repo,
+	});
+}
+
+async function createLabel(label) {
+	await octokit.rest.issues.createLabel({
+		owner: github.context.repo.owner,
+		repo: github.context.repo.repo,
+		name: label.name,
+		description: label.description,
+		color: label.color,
+	})
+}
+
 async function getIssue(number) {
 	console.log("Details:");
 	console.log(github.context.repo.owner);
@@ -52,6 +69,8 @@ async function removeLabel(issueNumber, label) {
 }
 
 module.exports = {
+	getLabels,
+	createLabel,
 	getCurrentIssueNumber,
 	getIssue,
 	writeComment,

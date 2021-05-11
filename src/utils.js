@@ -2,6 +2,12 @@ regex = /blocked by #(\d+)/i
 
 const signature = "This comment was automatically written by the [Blocking Issues](https://github.com/Levi-Lesches/blocking-issues) bot, and this PR will be monitored for further progress.";
 
+const blockedLabel = {
+	name: "blocked",
+	color: "000000",
+	description: "This PR needs is waiting for one or more issues to be closed.",
+}
+
 function getBlockingIssues(body) {
 	issues = [];
 	for (match of body.matchAll(regex)) {
@@ -26,4 +32,4 @@ function getCommentText(blockingIssues, openIssues) {
 	return result;
 }
 
-module.exports = {getBlockingIssues, getCommentText, signature}
+module.exports = {getBlockingIssues, getCommentText, signature, blockedLabel}

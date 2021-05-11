@@ -3,6 +3,9 @@ const model = require('./model.js');
 
 async function main() {
 	try {
+		console.log("Initializing labels");
+		await model.initLabels();
+
 		console.log("Getting issue");
 		const issue = await model.getCurrentIssue();
 		console.log(issue);
