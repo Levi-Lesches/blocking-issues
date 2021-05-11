@@ -20,7 +20,14 @@ async function initLabels() {
 
 async function update(pr) {
 	const blockingIssueNumbers = utils.getBlockingIssues(pr.body);
-	if (blockingIssueNumbers.length == 0) return;
+	if (blockingIssueNumbers.length == 0) {
+		const oldComment = await github.getCommentID(pr.number);
+		if (oldComment) {
+			console.log("No blocking issues -- removing comment");
+			await github.deleteComment();
+		}
+		return;
+	}
 
 	console.log(`PR is blocked by ${blockingIssueNumbers}`);
 	var openIssues = [];

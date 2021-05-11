@@ -62,23 +62,36 @@ async function rewriteComment(id, text) {
 	});
 }
 
-async function writeComment(issueNumber, text) {
-	console.log(`Getting comments for PR ${issueNumber}`);
-	comments = await getComments(issueNumber);
-	console.log(comments);
-	for (comment of comments) {
-		if (comment.body.endsWith(utils.signature)) {
-			console.log(`Found old comment (id ${comment.id}). Updating...`);
-			return await rewriteComment(comment.id, text);
-		}
-	}
-
-	await octokit.rest.issues.createComment({
+async function deleteComment(id) {
+	await octokit.rest.issues.deleteComment({
 		owner: github.context.repo.owner,
 		repo: github.context.repo.repo,
-		issue_number: issueNumber,
-		body: text,
+		comment_id: id,
 	});
+}
+
+async function getCommentID(issueNumber) {
+	comments = await getComments(issueNumber);
+	for (comment of comments) {
+		if (comment.body.endsWith(utils.signature)) {
+			return comment.id;
+		}
+	}
+}
+
+async function writeComment(issueNumber, text) {
+	const id = await getCommentID(issueNumber);
+	if (id) {
+		console.log(`Found old comment (id ${comment.id}). Updating...`);
+		return await rewriteComment(id, text);
+	} else {
+		await octokit.rest.issues.createComment({
+			owner: github.context.repo.owner,
+			repo: github.context.repo.repo,
+			issue_number: issueNumber,
+			body: text,
+		});
+	}
 }
 
 async function applyLabel(issueNumber, label) {
@@ -100,11 +113,18 @@ async function removeLabel(issueNumber, label) {
 }
 
 module.exports = {
-	getLabels,
-	createLabel,
+	// Issues
 	getCurrentIssueNumber,
 	getIssue,
-	writeComment,
+
+	// labels
+	getLabels,
+	createLabel,
 	applyLabel,
 	removeLabel,
+
+	// comments
+	deleteComment,
+	getCommentID,
+	writeComment,
 }

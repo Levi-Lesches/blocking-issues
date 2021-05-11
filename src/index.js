@@ -14,9 +14,12 @@ async function main() {
 			console.log("Analyzing current issue/PR");
 			const isReady = await model.update(issue);
 
-			console.log(`Is ready? ${isReady}`);
 			if (isReady == false)  // undefined means no blocking issues
 				core.setFailed("PR is blocked")
+			else if (isReady == undefined) 
+				console.log("No blocking issues found.")
+			else if (isReady == true) 
+				console.log("All blocking issues have been closed")
 		} else {
 			console.log("Issue is closed. Checking for blocked PRs");
 			// get blocked PRs
