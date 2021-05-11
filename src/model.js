@@ -21,9 +21,9 @@ async function initLabels() {
 async function update(pr) {
 	const blockingIssueNumbers = utils.getBlockingIssues(pr.body);
 	if (blockingIssueNumbers.length == 0) {
+		console.log("No blocking issues -- removing comment and label");
 		const oldComment = await github.getCommentID(pr.number);
 		if (oldComment) {
-			console.log("No blocking issues -- removing comment");
 			await github.deleteComment(oldComment);
 		}
 		await github.removeLabel(pr.number, "blocked");

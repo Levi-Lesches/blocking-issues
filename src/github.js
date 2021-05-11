@@ -104,7 +104,7 @@ async function applyLabel(issueNumber, label) {
 }
 
 async function removeLabel(issueNumber, label) {
-	await octokit.rest.issues.addLabels({
+	await octokit.rest.issues.removeLabel({
 		owner: github.context.repo.owner,
 		repo: github.context.repo.repo,
 		issue_number: issueNumber,
