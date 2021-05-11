@@ -10,10 +10,11 @@ function getCurrentIssueNumber() {
 }
 
 async function getLabels() {
-	return await octokit.rest.issues.listLabelsForRepo({
+	var json = await octokit.rest.issues.listLabelsForRepo({
 		owner: github.context.repo.owner,
 		repo: github.context.repo.repo,
 	});
+	return json.data;
 }
 
 async function createLabel(label) {
