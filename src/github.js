@@ -134,7 +134,7 @@ async function _getPR(number) {
 	const json = await octokit.rest.pulls.get({
 		owner: github.context.repo.owner,
 		repo: github.context.repo.repo,
-		issue_number: number,
+		pull_number: number,
 	});
 	return json.data;
 }
@@ -156,9 +156,15 @@ async function _rerunWorkflow(id) {
 }
 
 async function rerunAction(issueNumber) {
+	console.log(`    Getting PR #${issueNumber}`);
 	const pr = await _getPR(issueNumber);
+
 	const branch = pr.head.ref;
+	console.log(`    Re-running most recent action on ${branch}`);
+
+	console.log("    Getting all actions");
 	const actionRuns = await _getActionRuns();
+
 	for (action of actions) {
 		if (action.name == "Blocking Issues" && action.head_branch === branch) {
 			console.log(`Rerunning action run id: ${action.id}`);
