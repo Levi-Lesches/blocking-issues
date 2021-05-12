@@ -160,14 +160,14 @@ async function rerunAction(issueNumber) {
 	const pr = await _getPR(issueNumber);
 
 	const branch = pr.head.ref;
-	console.log(`    Re-running most recent action on ${branch}`);
+	console.log(`      Re-running most recent action on ${branch}`);
 
-	console.log("    Getting all actions");
+	console.log("      Getting all actions");
 	const actionRuns = await _getActionRuns();
 
-	for (action of actions) {
+	for (action of actionRuns) {
 		if (action.name == "Blocking Issues" && action.head_branch === branch) {
-			console.log(`Rerunning action run id: ${action.id}`);
+			console.log(`"      Rerunning action run id: ${action.id}`);
 			await _rerunWorkflow(action.id);
 		}
 	}
