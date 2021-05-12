@@ -127,7 +127,8 @@ async function triggerAction(ref) {
 		repo: github.context.repo.repo,
 	  workflow_id: "Blocking Issues",
 	  ref: ref,
-});
+	});
+}
 
 module.exports = {
 	// Issues
