@@ -19,6 +19,7 @@ async function initLabels() {
 }
 
 async function update(pr) {
+	console.log(`Processing #${pr.number}`);
 	const blockingIssueNumbers = utils.getBlockingIssues(pr.body);
 	if (blockingIssueNumbers.length == 0) {
 		console.log("No blocking issues -- removing comment and label");
@@ -52,8 +53,16 @@ async function update(pr) {
 	return openIssues.length == 0;
 }
 
+async function unblockPRs() {
+	const blockedPRs = await github.getBlockedPRs();
+	for (pr of blockedPRs) {
+		await update(pr);
+	}
+}
+
 module.exports = {
 	initLabels,
 	getCurrentIssue,
 	update,
+	unblockPRs,
 }

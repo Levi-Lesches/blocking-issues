@@ -3,7 +3,6 @@ const github = require('@actions/github');
 const utils = require("./utils.js");
 
 const token = core.getInput("token");
-console.log(token);
 const octokit = github.getOctokit(token);
 
 function getCurrentIssueNumber() {
@@ -29,9 +28,6 @@ async function createLabel(label) {
 }
 
 async function getIssue(number) {
-	console.log("Details:");
-	console.log(github.context.repo.owner);
-	console.log(github.context.repo.repo);
 	var json = await octokit.rest.issues.get({
 		owner: github.context.repo.owner,
 		repo: github.context.repo.repo,
@@ -49,7 +45,6 @@ async function getComments(issueNumber) {
 		repo: github.context.repo.repo,
 		issue_number: issueNumber,
 	});
-	console.log(json);
 	return json.data;
 }
 
@@ -112,6 +107,16 @@ async function removeLabel(issueNumber, label) {
   });
 }
 
+async function getBlockedPRs() {
+	const json = await octokit.rest.issues.listForRepo({
+		owner: github.context.repo.owner,
+		repo: github.context.repo.repo,
+		state: "open",
+		labels: "blocked",
+	});
+	return json.data;
+}
+
 module.exports = {
 	// Issues
 	getCurrentIssueNumber,
@@ -122,6 +127,7 @@ module.exports = {
 	createLabel,
 	applyLabel,
 	removeLabel,
+	getBlockedPRs,
 
 	// comments
 	deleteComment,

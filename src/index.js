@@ -22,6 +22,7 @@ async function main() {
 				console.log("All blocking issues have been closed")
 		} else {
 			console.log("Issue is closed. Checking for blocked PRs");
+			await model.unblockPRs();
 			// get blocked PRs
 			// reprocess each one (call update on it)
 		}
