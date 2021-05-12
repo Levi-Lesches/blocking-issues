@@ -23,8 +23,6 @@ async function main() {
 		} else {
 			console.log("Issue is closed. Checking for blocked PRs");
 			await model.unblockPRs(issue.number);
-			// get blocked PRs
-			// reprocess each one (call update on it)
 		}
 	} catch (error) {
 		core.setFailed(error.message);
@@ -32,8 +30,3 @@ async function main() {
 }
 
 main()
-
-/* TODO: 
-- bug when reopening issue that PR depends on
-- allow PR to be unblocked
-*/
