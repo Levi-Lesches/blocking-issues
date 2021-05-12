@@ -62,7 +62,7 @@ async function unblockPRs(issueNumber) {
 	for (pr of blockedPRs) {
 		// await update(pr);
 		console.log(`Processing #${pr.number}`);
-		blockingIssues = getBlockingIssues(pr.body);
+		blockingIssues = utils.getBlockingIssues(pr.body);
 		console.log(`  PR is blocked by ${blockingIssues}`);
 		if (!blockingIssues.includes(issueNumber)) continue;
 		console.log("  Rerunning action on PR");
