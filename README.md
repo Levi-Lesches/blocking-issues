@@ -1,7 +1,7 @@
 # Blocking Issues
 A GitHub action to label issues and PRs when they're blocked by another issue or PR.
 
-**When triggered by an open PR**: Checks for blocking issues in the PR text (`Blocked by #X`)
+**When triggered by an open PR**: Checks for blocking issues in the PR text (`Blocked by #X, #Y, #Z`)
 
 **When triggered by a closed issue**: Checks for other PRs that were blocked by this issue and updates them
 
