@@ -5,9 +5,9 @@ inputs:
     description: "The GitHub token to use. Make sure to use a Personal Access Token, so PRs can be updated." 
     required: false
     default: ${{ github.token }}
-runs:
-  using: 'node12'
-  main: 'src/index.js'
 branding: 
   icon: "alert-triangle"
   color: "red"
+runs:
+  using: 'node12'
+  main: 'src/index.js'
