@@ -2,9 +2,9 @@ name: "Blocking Issues"
 description: "Labels issues and PRs when they're blocked"
 inputs: 
   token: 
-    description: "The GitHub token to use."
+    description: "The GitHub token to use. Create a PAT and save it as a secret called TOKEN"
     required: false
-    default: ${{ github.token }}
+    default: ${{ secrets.TOKEN }}
 runs:
   using: 'node12'
   main: 'src/index.js'

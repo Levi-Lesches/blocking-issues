@@ -21,11 +21,11 @@ function getBlockingIssues(body) {
 function getCommentText(blockingIssues, openIssues) {
 	const isBlocked = openIssues.length > 0
 	var result = "";
-	result += `# Status: ${isBlocked ? "Blocked :red_circle:" : "Ready to merge :green_circle:"}\n`;
+	result += `# Status: ${isBlocked ? "Blocked :x:" : "Ready to merge :heavy_check_mark:"}\n`;
 	result += "### Issues blocking this PR: \n";
 	for (issue of blockingIssues) {
 		var isOpen = openIssues.includes(issue);
-		result += `- #${issue} ${isOpen ? ":red_circle:" : ":green_circle:"}\n`;
+		result += `- #${issue} ${isOpen ? ":x:" : ":heavy_check_mark:"}\n`;
 	}
 	result += "----\n";
 	result += signature;

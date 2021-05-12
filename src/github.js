@@ -118,7 +118,6 @@ async function removeLabel(issueNumber, label) {
 		  });
 		}
 	}
-
 }
 
 async function getBlockedPRs() {
