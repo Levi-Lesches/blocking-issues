@@ -1,4 +1,4 @@
-regex = /blocked by #(\d+)/i
+regex = /blocked by ([#\d, ]+)/i
 
 const signature = "This comment was automatically written by the [Blocking Issues](https://github.com/Levi-Lesches/blocking-issues) bot, and this PR will be monitored for further progress.";
 
@@ -10,10 +10,11 @@ const blockedLabel = {
 
 function getBlockingIssues(body) {
 	issues = [];
-	for (match of body.matchAll(regex)) {
-		if (match [1] != undefined) {
-			issues.push(parseInt(match [1]))
-		}
+	match = regex.exec(body);
+	if (!match) return issues;
+	for (issue of match [1].split(", ")) {
+		issueNumber = parseInt(issue.substring(1));
+		issues.push(issueNumber);
 	}
 	return issues;
 }
