@@ -6,7 +6,7 @@ inputs:
     required: false
     default: ${{ github.token }}
 branding: 
-  icon: "alert-triangle"
+  icon: "git-pull-request"
   color: "red"
 runs:
   using: 'node12'
