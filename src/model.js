@@ -23,11 +23,21 @@ async function update(pr) {
 	const blockingIssueNumbers = utils.getBlockingIssues(pr.body);
 	if (blockingIssueNumbers.length == 0) {
 		console.log("No blocking issues -- removing comment and label");
+		// If comment is present, remove it
 		const oldComment = await github.getCommentID(pr.number);
 		if (oldComment) {
 			await github.deleteComment(oldComment);
 		}
-		await github.removeLabel(pr.number, "blocked");
+
+		// If label is present, remove it
+		const labels = await github.getLabelsForPR(pr.number);
+		var hasLabel = false;
+		for (label of labels) {
+			if (label.name === utils.blockedLabel.name) hasLabel = true;
+		}
+		if (hasLabel) 
+			await github.removeLabel(pr.number, "blocked");
+
 		return;
 	}
 

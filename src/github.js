@@ -102,6 +102,15 @@ async function applyLabel(issueNumber, label) {
   });
 }
 
+async function getLabelsForPR(issueNumber) {
+	const json = await octokit.rest.issues.listLabelsOnIssue({
+		owner: github.context.repo.owner,
+		repo: github.context.repo.repo,
+		issue_number: issueNumber,
+	});
+	return json.data;
+}
+
 async function removeLabel(issueNumber, label) {
 	await octokit.rest.issues.removeLabel({
 		owner: github.context.repo.owner,
