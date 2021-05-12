@@ -109,7 +109,7 @@ async function getLabelsForPR(issueNumber) {
 
 async function removeLabel(issueNumber, label) {
 	for (otherLabel of await getLabelsForPR(issueNumber)) {
-		if (otherLabel.name == label.name) {
+		if (otherLabel.name == label) {
 			return await octokit.rest.issues.removeLabel({
 				owner: github.context.repo.owner,
 				repo: github.context.repo.repo,
