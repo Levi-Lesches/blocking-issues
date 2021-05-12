@@ -164,7 +164,12 @@ async function rerunAction(issueNumber) {
 	const actionRuns = await _getActionRuns();
 
 	for (action of actionRuns) {
-		if (action.name == "Blocking Issues" && action.pull_requests [0].number === issueNumber) {
+		const actionTarget = action.pull_requests [0];
+		if (
+			action.name == "Blocking Issues" 
+			&& actionTarget 
+			&& actionTarget.number === issueNumber
+		) {
 			console.log(`      Rerunning action run id: ${action.id}`);
 			await _rerunWorkflow(action.id);
 		}
