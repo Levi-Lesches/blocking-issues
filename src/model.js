@@ -20,8 +20,6 @@ async function initLabels() {
 
 async function update(pr) {
 	console.log(`Processing #${pr.number}`);
-	console.log("OMG THIS IS IMPORTANT: ");
-	console.log(github.getRef());
 	const blockingIssueNumbers = utils.getBlockingIssues(pr.body);
 	if (blockingIssueNumbers.length == 0) {
 		console.log("No blocking issues -- removing comment and label");
@@ -58,8 +56,7 @@ async function update(pr) {
 async function unblockPRs() {
 	const blockedPRs = await github.getBlockedPRs();
 	for (pr of blockedPRs) {
-		console.log(`Updating ${pr}`)
-		triggerAction(github.context.ref)
+		await update(pr);
 	}
 }
 

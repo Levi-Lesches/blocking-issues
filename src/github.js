@@ -121,15 +121,6 @@ async function getBlockedPRs() {
 	return json.data;
 }
 
-async function triggerAction(ref) {
-	await octokit.rest.actions.createWorkflowDispatch({
-		owner: github.context.repo.owner,
-		repo: github.context.repo.repo,
-	  workflow_id: "Blocking Issues",
-	  ref: ref,
-	});
-}
-
 module.exports = {
 	// Issues
 	getCurrentIssueNumber,
@@ -147,6 +138,5 @@ module.exports = {
 	getCommentID,
 	writeComment,
 
-	triggerAction,
 	getRef,
 }
