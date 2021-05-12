@@ -108,12 +108,17 @@ async function getLabelsForPR(issueNumber) {
 }
 
 async function removeLabel(issueNumber, label) {
-	await octokit.rest.issues.removeLabel({
-		owner: github.context.repo.owner,
-		repo: github.context.repo.repo,
-		issue_number: issueNumber,
-		name: label
-  });
+	for (otherLabel of await getLabelsForPR(issueNumber)) {
+		if (otherLabel.name == label.name) {
+			return await octokit.rest.issues.removeLabel({
+				owner: github.context.repo.owner,
+				repo: github.context.repo.repo,
+				issue_number: issueNumber,
+				name: label
+		  });
+		}
+	}
+
 }
 
 async function getBlockedPRs() {
