@@ -9,10 +9,6 @@ function getCurrentIssueNumber() {
 	return github.context.issue.number;
 }
 
-function getRef() {
-	return github.context.ref;
-}
-
 async function getLabels() {
 	var json = await octokit.rest.issues.listLabelsForRepo({
 		owner: github.context.repo.owner,
@@ -125,7 +121,7 @@ async function getBlockedPRs() {
 		owner: github.context.repo.owner,
 		repo: github.context.repo.repo,
 		state: "open",
-		labels: "blocked",
+		labels: utils.blockedLabel.name,
 	});
 	return json.data;
 }
@@ -141,11 +137,10 @@ module.exports = {
 	applyLabel,
 	removeLabel,
 	getBlockedPRs,
+	getLabelsForPR,
 
 	// comments
 	deleteComment,
 	getCommentID,
 	writeComment,
-
-	getRef,
 }
