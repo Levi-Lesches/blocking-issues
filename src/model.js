@@ -56,10 +56,17 @@ async function update(pr) {
 	return openIssues.length == 0;
 }
 
-async function unblockPRs() {
+async function unblockPRs(issueNumber) {
+	console.log("Going through all blocked issues");
 	const blockedPRs = await github.getBlockedPRs();
 	for (pr of blockedPRs) {
-		await update(pr);
+		// await update(pr);
+		console.log(`Processing #${pr.number}`);
+		blockingIssues = getBlockingIssues(pr.body);
+		console.log(`  PR is blocked by ${blockingIssues}`);
+		if (!blockingIssues.includes(issueNumber)) continue;
+		console.log("  Rerunning action on PR");
+		await github.rerunAction(pr.number);
 	}
 }
 

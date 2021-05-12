@@ -130,6 +130,43 @@ async function getBlockedPRs() {
 	return json.data;
 }
 
+async function _getPR(number) {
+	const json = await octokit.rest.pulls.get({
+		owner: github.context.repo.owner,
+		repo: github.context.repo.repo,
+		issue_number: number,
+	});
+	return json.data;
+}
+
+async function _getActionRuns() {
+	const json = await octokit.rest.actions.listWorkflowRunsForRepo({
+		owner: github.context.repo.owner,
+		repo: github.context.repo.repo,
+	});
+	return json.data.workflow_runs;
+}
+
+async function _rerunWorkflow(id) {
+	await octokit.rest.actions.reRunWorkflow({
+		owner: github.context.repo.owner,
+		repo: github.context.repo.repo,
+	  run_id: id,
+	});
+}
+
+async function rerunAction(issueNumber) {
+	const pr = await _getPR(issueNumber);
+	const branch = pr.head.ref;
+	const actionRuns = await _getActionRuns();
+	for (action of actions) {
+		if (action.name == "Blocking Issues" && action.head_branch === branch) {
+			console.log(`Rerunning action run id: ${action.id}`);
+			await _rerunWorkflow(action.id);
+		}
+	}
+}
+
 module.exports = {
 	// Issues
 	getCurrentIssueNumber,
@@ -147,4 +184,6 @@ module.exports = {
 	deleteComment,
 	getCommentID,
 	writeComment,
+
+	rerunAction,
 }
