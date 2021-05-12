@@ -9,6 +9,10 @@ function getCurrentIssueNumber() {
 	return github.context.issue.number;
 }
 
+function getRef() {
+	return github.context.ref;
+}
+
 async function getLabels() {
 	var json = await octokit.rest.issues.listLabelsForRepo({
 		owner: github.context.repo.owner,
@@ -117,6 +121,14 @@ async function getBlockedPRs() {
 	return json.data;
 }
 
+async function triggerAction(ref) {
+	await octokit.rest.actions.createWorkflowDispatch({
+		owner: github.context.repo.owner,
+		repo: github.context.repo.repo,
+	  workflow_id: "Blocking Issues",
+	  ref: ref,
+});
+
 module.exports = {
 	// Issues
 	getCurrentIssueNumber,
@@ -133,4 +145,7 @@ module.exports = {
 	deleteComment,
 	getCommentID,
 	writeComment,
+
+	triggerAction,
+	getRef,
 }

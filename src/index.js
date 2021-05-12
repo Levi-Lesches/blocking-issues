@@ -34,6 +34,6 @@ async function main() {
 main()
 
 /* TODO: 
-- rewrite comment instead of adding new one each time
-- support closed issues
+- bug when reopening issue that PR depends on
+- allow PR to be unblocked
 */
