@@ -1,4 +1,4 @@
-regex = /blocked by ([#\d, ]+)/i
+regex = /blocked by ([#\d, ]+)/ig
 
 const signature = "This comment was automatically written by the [Blocking Issues](https://github.com/Levi-Lesches/blocking-issues) bot, and this PR will be monitored for further progress.";
 
