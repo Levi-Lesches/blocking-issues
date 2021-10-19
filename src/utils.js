@@ -10,7 +10,7 @@ const blockedLabel = {
 
 function getBlockingIssues(body) {
 	issues = [];
-	for (match of regex.matchAll(body)) {
+	for (match of body.matchAll(regex)) {
 		for (issue of match [1].split(", ")) {
 			issueNumber = parseInt(issue.substring(1));
 			issues.push(issueNumber);
