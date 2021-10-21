@@ -20,7 +20,7 @@ jobs:
     name: Checks for blocking issues
     
     steps: 
-      - uses: Levi-Lesches/blocking-issues@v1
+      - uses: Levi-Lesches/blocking-issues@v1.1
 ```
 
 This action will not re-block a PR if the issue is reopened, and will throw an error if the issue cannot be found. Simply edit the PR description to re-run the bot
