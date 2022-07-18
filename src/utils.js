@@ -1,11 +1,13 @@
+const core = require('@actions/core');
+
 regex = /blocked by:? ([#\d, ]+)/ig
 
 const signature = "This comment was automatically written by the [Blocking Issues](https://github.com/Levi-Lesches/blocking-issues) bot, and this PR will be monitored for further progress.";
 
 const blockedLabel = {
-	name: "blocked",
-	color: "000000",
-	description: "This PR needs is waiting for one or more issues to be closed.",
+	name: core.getInput("label-name"),
+	color: String(core.getInput("label-color")),  // user may enter a hex code without quotes
+	description: core.getInput("label-description"),
 }
 
 function getBlockingIssues(body) {
