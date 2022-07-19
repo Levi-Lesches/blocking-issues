@@ -10,7 +10,7 @@ name: Blocking Issues
 
 on: 
   issues:
-    types: [opened, edited. deleted. transferred, closed, reopened]
+    types: [opened, edited, deleted, transferred, closed, reopened]
   pull_request_target: 
     types: [opened, edited, closed, reopened]
     
