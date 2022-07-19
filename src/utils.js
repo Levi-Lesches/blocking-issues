@@ -23,9 +23,9 @@ function getBlockingIssues(body) {
 }
 
 function getCommentText(blockingIssues, openIssues, brokenIssues) {
-	const status = "Ready to merge :heavy_check_mark:";
-	if (brokenIssues.length > 0) summary = "Error :warning:";
-	else if (openIssues.length > 0) summary = "Blocked :x:";
+	let status = "Ready to merge :heavy_check_mark:";
+	if (brokenIssues.length > 0) status = "Error :warning:";
+	else if (openIssues.length > 0) status = "Blocked :x:";
 	var result = "";
 	result += `# Status: ${status}\n`;
 	result += "### Issues blocking this PR: \n";
