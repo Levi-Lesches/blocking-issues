@@ -41,6 +41,7 @@ async function getIssue(number) {
 		} else {
 			core.setFailed(`Got an HTTPError with status code ${error.status} while retrieving issue #${number}`);
 		}
+		throw error;
 	}
 }
 
