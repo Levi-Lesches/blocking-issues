@@ -24,15 +24,15 @@ function getBlockingIssues(body) {
 
 function getCommentText(blockingIssues, openIssues, brokenIssues) {
 	const status = "Ready to merge :heavy_check_mark:";
-	if (openIssues.length > 0) summary = "Blocked :x:";
-	else if (brokenIssues.length > 0) summary = "Error :warning:";
+	if (brokenIssues.length > 0) summary = "Error :warning:";
+	else if (openIssues.length > 0) summary = "Blocked :x:";
 	var result = "";
 	result += `# Status: ${status}\n`;
 	result += "### Issues blocking this PR: \n";
 	for (issue of blockingIssues) {
 		let symbol = ":heavy_check_mark";
 		if (openIssues.includes(issue)) symbol = ":x:";
-		else if (brokenIssues.includes(issue)) symbol = ":warning:";
+		else if (brokenIssues.includes(issue)) symbol = ":warning: Issue/PR not found";
 		var isOpen = openIssues.includes(issue);
 		result += `- #${issue} ${symbol}\n`;
 	}
