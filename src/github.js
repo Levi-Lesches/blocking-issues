@@ -37,9 +37,17 @@ async function getIssue(number) {
 		return json.data;
 	} catch (error) {  // RequestError
 		if (error.status === 404) {
+			const check = await octokit.rest.checks.create({
+				owner: github.context.repo.owner,
+				repo: github.context.repo.repo,
+				head_sha: github.context.sha,
+				name: "Blocking Issues",
+				status: "completed",
+				conclusion: "action_required",
+			});
 			throw Error(`Issue not found: #${number}`);
 		} else {
-			throw Error(`Got an HTTPError with status code ${error.status} while retrieving issue #${number}`);
+			throw Error(`Got an HTTP ${error.status} error while retrieving issue #${number}`);
 		}
 	}
 }
