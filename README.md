@@ -20,7 +20,7 @@ jobs:
     name: Checks for blocking issues
     
     steps: 
-      - uses: Levi-Lesches/blocking-issues@v1.1
+      - uses: Levi-Lesches/blocking-issues@v1
         with: 
           # Optional: Configure the label applied to blocked issues
           # NOTE: Changing these values after the bot has been deployed may result in undefined 
