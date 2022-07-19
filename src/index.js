@@ -15,7 +15,7 @@ async function main() {
 			const isReady = await model.update(issue);
 
 			if (isReady == false)  // undefined means no blocking issues
-				core.setFailed("PR is blocked")
+				core.error("PR is blocked")
 			else if (isReady == undefined) 
 				console.log("No blocking issues found.")
 			else if (isReady == true) 
@@ -25,7 +25,7 @@ async function main() {
 			await model.unblockPRs(issue.number);
 		}
 	} catch (error) {
-		core.setFailed(error.message);
+		core.error(error.message);
 	}
 }
 
