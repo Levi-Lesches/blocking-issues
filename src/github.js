@@ -28,19 +28,20 @@ async function createLabel(label) {
 }
 
 async function getIssue(number) {
-	var json = await octokit.rest.issues.get({
-		owner: github.context.repo.owner,
-		repo: github.context.repo.repo,
-		issue_number: number,
-	});
-	console.log(json);
-	if (json.status === 404) {
-		console.log(`Caught error while retrieving issue #${number}`);
-		core.error(`Failed to get issue #${number}`);
-		throw Error(`Failed to get issue #${number}`);
-	}
-	else {
+	try {
+		var json = await octokit.rest.issues.get({
+			owner: github.context.repo.owner,
+			repo: github.context.repo.repo,
+			issue_number: number,
+		});
 		return json.data;
+	} catch (error) {  // RequestError
+		if (error.status === 404) {
+			core.error(`Issue not found: #${number}`);
+			// throw Error(`Failed to get issue #${number}`);
+		} else {
+			core.error(`Got an HTTPError with status code ${error.status} while retrieving issue #${number}`);
+		}
 	}
 }
 
