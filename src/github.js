@@ -37,11 +37,10 @@ async function getIssue(number) {
 		return json.data;
 	} catch (error) {  // RequestError
 		if (error.status === 404) {
-			core.setFailed(`Issue not found: #${number}`);
+			throw Error(`Issue not found: #${number}`);
 		} else {
-			core.setFailed(`Got an HTTPError with status code ${error.status} while retrieving issue #${number}`);
+			throw Error(`Got an HTTPError with status code ${error.status} while retrieving issue #${number}`);
 		}
-		throw error;
 	}
 }
 
