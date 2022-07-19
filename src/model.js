@@ -35,16 +35,17 @@ async function update(pr) {
 	}
 
 	console.log(`PR is blocked by ${blockingIssueNumbers}`);
-	var openIssues = [];
+	let openIssues = [], brokenIssues = [];
 	for (issueNumber of blockingIssueNumbers) {
 		const issue = await github.getIssue(issueNumber);
-		if (issue.state !== "open") continue;
-		openIssues.push(issueNumber);
+		if (issue === null) brokenIssues.push(issueNumber);
+		else if (issue.state === "open") openIssues.push(issueNumber);
 	}
 	console.log(`PR needs these issues to be closed: ${openIssues}`);
+	console.warn(`The following issues could not be found: ${brokenIssues}`);
 
 	console.log("Writing comment");
-	const commentText = utils.getCommentText(blockingIssueNumbers, openIssues);
+	const commentText = utils.getCommentText(blockingIssueNumbers, openIssues, brokenIssues);
 	await github.writeComment(pr.number, commentText);
 	console.log("Comment written");
 

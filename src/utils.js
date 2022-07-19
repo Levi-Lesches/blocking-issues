@@ -22,14 +22,19 @@ function getBlockingIssues(body) {
 	return issues;
 }
 
-function getCommentText(blockingIssues, openIssues) {
-	const isBlocked = openIssues.length > 0
+function getCommentText(blockingIssues, openIssues, brokenIssues) {
+	let status = "Ready to merge :heavy_check_mark:";
+	if (brokenIssues.length > 0) status = "Error :warning:";
+	else if (openIssues.length > 0) status = "Blocked :x:";
 	var result = "";
-	result += `# Status: ${isBlocked ? "Blocked :x:" : "Ready to merge :heavy_check_mark:"}\n`;
+	result += `# Status: ${status}\n`;
 	result += "### Issues blocking this PR: \n";
 	for (issue of blockingIssues) {
+		let symbol = ":heavy_check_mark";
+		if (openIssues.includes(issue)) symbol = ":x:";
+		else if (brokenIssues.includes(issue)) symbol = ":warning: Issue/PR not found";
 		var isOpen = openIssues.includes(issue);
-		result += `- #${issue} ${isOpen ? ":x:" : ":heavy_check_mark:"}\n`;
+		result += `- #${issue} ${symbol}\n`;
 	}
 	result += "----\n";
 	result += signature;
