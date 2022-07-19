@@ -12,6 +12,7 @@ const blockedLabel = {
 
 function getBlockingIssues(body) {
 	issues = [];
+	if (body === null) return issues;
 	for (match of body.matchAll(regex)) {
 		for (issue of match [1].split(", ")) {
 			issueNumber = parseInt(issue.substring(1));
