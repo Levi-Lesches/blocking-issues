@@ -44,6 +44,10 @@ async function getIssue(number) {
 				name: "Blocking Issues",
 				status: "completed",
 				conclusion: "action_required",
+				output: {
+					title: "Parse description",
+					summary: `Could not find issue #${number}`,
+				}
 			});
 			throw Error(`Issue not found: #${number}`);
 		} else {
