@@ -30,10 +30,9 @@ function getCommentText(blockingIssues, openIssues, brokenIssues) {
 	result += `# Status: ${status}\n`;
 	result += "### Issues blocking this PR: \n";
 	for (issue of blockingIssues) {
-		let symbol = ":heavy_check_mark";
+		let symbol = ":heavy_check_mark:";
 		if (openIssues.includes(issue)) symbol = ":x:";
 		else if (brokenIssues.includes(issue)) symbol = ":warning: Issue/PR not found";
-		var isOpen = openIssues.includes(issue);
 		result += `- #${issue} ${symbol}\n`;
 	}
 	result += "----\n";
