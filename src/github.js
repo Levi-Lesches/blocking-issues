@@ -188,6 +188,7 @@ module.exports = {
 	// Issues
 	getCurrentIssueNumber,
 	getIssue,
+	isPR,
 
 	// labels
 	getLabels,
