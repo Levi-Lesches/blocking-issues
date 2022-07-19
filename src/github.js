@@ -9,6 +9,8 @@ function getCurrentIssueNumber() {
 	return github.context.issue.number;
 }
 
+function isPR(issue) { return "pull_request" in issue; }
+
 async function getLabels() {
 	var json = await octokit.rest.issues.listLabelsForRepo({
 		owner: github.context.repo.owner,
@@ -186,6 +188,7 @@ module.exports = {
 	// Issues
 	getCurrentIssueNumber,
 	getIssue,
+	isPR,
 
 	// labels
 	getLabels,
