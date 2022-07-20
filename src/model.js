@@ -40,12 +40,14 @@ export async function update(issue) {
 
 	if (blockingIssueNumbers.length == 0) {
 		core.info("No blocking issues -- removing comment and label");
-		await github.removeLabel(issue.number, label);
-
-		// If comment is present, remove it
-		const oldComment = await github.getCommentID(issue.number);
-		if (oldComment) await github.deleteComment(oldComment);
-		
+		try {
+			await github.removeLabel(issue.number, label);
+			core.debug("Removed label");
+			// If comment is present, remove it
+			const oldComment = await github.getCommentID(issue.number);
+			if (oldComment) await github.deleteComment(oldComment);
+			core.debug("Removed comment");
+		} catch (error) { /* No action needed if issue is not already blocked. */}
 		return;
 	}
 
@@ -75,8 +77,8 @@ export async function unblockPRs(issueNumber) {
 	core.info(`Unblocking issues blocked by #${issueNumber}...`);
 	const label = await initLabel();
 	const blockedPRs = await github.getIssuesWithLabel(label);
-	core.debug(`The following issues are blocked: ${blockedPRs}`);
 	for (const pr of blockedPRs) {
+		core.debug(`Parsing #${pr.number} for blocking issues`);
 		const blockingIssues = utils.parseBlockingIssues(pr.body);
 		if (!blockingIssues.includes(issueNumber)) continue;
 		core.info(`Updating ${pr.number}`);
