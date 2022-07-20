@@ -29,6 +29,16 @@ export async function createLabel(label) {
 	});
 }
 
+export async function getIssuesWithLabel(label) {
+	const json = await octokit.rest.issues.listForRepo({
+		owner: github.context.repo.owner,
+		repo: github.context.repo.repo,
+		state: "open",
+		labels: label.name,
+	});
+	return json.data;
+}
+
 export async function getIssue(number) {
 	try {
 		var json = await octokit.rest.issues.get({
@@ -113,16 +123,6 @@ export async function removeLabel(issueNumber, label) {
 		issue_number: issueNumber,
 		name: label
 	});
-}
-
-export async function getBlockedPRs() {
-	const json = await octokit.rest.issues.listForRepo({
-		owner: github.context.repo.owner,
-		repo: github.context.repo.repo,
-		state: "open",
-		labels: utils.blockedLabel.name,
-	});
-	return json.data;
 }
 
 export async function _getPR(number) {

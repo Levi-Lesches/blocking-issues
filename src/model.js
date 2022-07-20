@@ -73,7 +73,8 @@ export async function update(issue) {
 
 export async function unblockPRs(issueNumber) {
 	core.info(`Unblocking issues blocked by #${issueNumber}...`);
-	const blockedPRs = await github.getBlockedPRs();
+	const label = await initLabel();
+	const blockedPRs = await github.getIssuesWithLabel(label);
 	core.debug(`The following issues are blocked: ${blockedPRs}`);
 	for (const pr of blockedPRs) {
 		const blockingIssues = utils.parseBlockingIssues(pr.body);
