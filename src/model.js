@@ -12,8 +12,7 @@ export async function initLabel() {
 	// Get inputs.
 	const labels = await github.getLabels();
 	const preferredName = core.getInput("use-label");
-	core.debug(`User has the following labels: ${labels}`);
-	core.debug(`User prefers to use ${preferredName}`);
+	core.debug(`User prefers to use the "${preferredName}" label`);
 
 	// Discover labels.
 	let preferredLabel, defaultLabel;
@@ -30,7 +29,7 @@ export async function initLabel() {
 		label = utils.defaultLabel;
 	}
 
-	core.debug(`Using label: ${label}`);
+	core.debug(`Using label: ${label.name}`);
 	return label;
 }
 
