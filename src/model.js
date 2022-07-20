@@ -1,5 +1,6 @@
-const github = require("./github.js");
-const utils = require("./utils.js");
+import * as core from "@actions/core";
+import * as github from "./github.js";
+import * as utils from "./utils.js";
 
 export async function getCurrentIssue() {
 	return await github.getIssue(await github.getCurrentIssueNumber());
