@@ -26,7 +26,7 @@ export async function createLabel(label) {
 		name: label.name,
 		description: label.description,
 		color: label.color,
-	})
+	});
 }
 
 export async function getIssue(number) {
@@ -74,8 +74,8 @@ export async function deleteComment(id) {
 }
 
 export async function getCommentID(issueNumber) {
-	comments = await getComments(issueNumber);
-	for (comment of comments) {
+	const comments = await getComments(issueNumber);
+	for (const comment of comments) {
 		if (comment.body.endsWith(utils.signature)) {
 			return comment.id;
 		}
@@ -85,7 +85,7 @@ export async function getCommentID(issueNumber) {
 export async function writeComment(issueNumber, text) {
 	const id = await getCommentID(issueNumber);
 	if (id) {
-		console.log(`Found old comment (id ${comment.id}). Updating...`);
+		console.log(`Found old comment (id ${id}). Updating...`);
 		return await rewriteComment(id, text);
 	} else {
 		await octokit.rest.issues.createComment({
@@ -103,7 +103,7 @@ export async function applyLabel(issueNumber, label) {
 		repo: github.context.repo.repo,
 		issue_number: issueNumber,
 		labels: [label]
-  });
+	});
 }
 
 export async function removeLabel(issueNumber, label) {
@@ -112,7 +112,7 @@ export async function removeLabel(issueNumber, label) {
 		repo: github.context.repo.repo,
 		issue_number: issueNumber,
 		name: label
-  });
+	});
 }
 
 export async function getBlockedPRs() {
@@ -146,7 +146,7 @@ export async function _rerunWorkflow(id) {
 	await octokit.rest.actions.reRunWorkflow({
 		owner: github.context.repo.owner,
 		repo: github.context.repo.repo,
-	  run_id: id,
+		run_id: id,
 	});
 }
 
@@ -158,7 +158,7 @@ export async function rerunAction(issueNumber) {
 	console.log(`      Re-running most recent action on ${branch}`);
 	const actionRuns = await _getActionRuns();
 
-	for (action of actionRuns) {
+	for (const action of actionRuns) {
 		const actionTarget = action.pull_requests [0];
 		if (
 			action.name == "Blocking Issues" 

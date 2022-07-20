@@ -76,7 +76,7 @@ export async function unblockPRs(issueNumber) {
 	const blockedPRs = await github.getBlockedPRs();
 	core.debug(`The following issues are blocked: ${blockedPRs}`);
 	for (const pr of blockedPRs) {
-		blockingIssues = utils.parseBlockingIssues(pr.body);
+		const blockingIssues = utils.parseBlockingIssues(pr.body);
 		if (!blockingIssues.includes(issueNumber)) continue;
 		core.info(`Updating ${pr.number}`);
 		if (github.isPR(pr)) await github.rerunAction(pr.number);  // only works on prs

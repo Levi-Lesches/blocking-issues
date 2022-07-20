@@ -1,20 +1,18 @@
-import * as core from "@actions/core";
-
-const regex = /blocked by:? ([#\d, ]+)/ig
+const regex = /blocked by:? ([#\d, ]+)/ig;
 
 export const signature = "This comment was automatically written by the [Blocking Issues](https://github.com/Levi-Lesches/blocking-issues) bot, and this PR will be monitored for further progress.";
 export const defaultLabel = {
 	name: "blocked",
 	color: "000000",
 	description: "Waiting for another PR/issue to be merged/closed.",
-}
+};
 
 export function parseBlockingIssues(body) {
 	const issues = [];
 	if (body === null) return issues;
 	for (const match of body.matchAll(regex)) {
 		for (const issue of match [1].split(", ")) {
-			issueNumber = parseInt(issue.substring(1));
+			const issueNumber = parseInt(issue.substring(1));
 			issues.push(issueNumber);
 		}
 	}
