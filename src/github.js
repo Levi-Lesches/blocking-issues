@@ -48,7 +48,7 @@ export async function getIssue(number) {
 		});
 		return json.data;
 	} catch (error) {  // RequestError
-		if (error.status === 404) {
+		if (error.status === 404 || error.status === 410) {
 			core.setFailed(`Issue not found: #${number}`);
 			return null;  // the invalid reference will be in the comment
 		} else {
