@@ -95,7 +95,7 @@ export async function getCommentID(issueNumber) {
 export async function writeComment(issueNumber, text) {
 	const id = await getCommentID(issueNumber);
 	if (id) {
-		console.log(`Found old comment (id ${id}). Updating...`);
+		core.info(`Found old comment (id ${id}). Updating...`);
 		return await rewriteComment(id, text);
 	} else {
 		await octokit.rest.issues.createComment({
@@ -151,11 +151,11 @@ export async function _rerunWorkflow(id) {
 }
 
 export async function rerunAction(issueNumber) {
-	console.log(`    Getting PR #${issueNumber}`);
+	core.debug(`    Getting PR #${issueNumber}`);
 	const pr = await _getPR(issueNumber);
 
 	const branch = pr.head.ref;
-	console.log(`      Re-running most recent action on ${branch}`);
+	core.info(`      Re-running most recent action on ${branch}`);
 	const actionRuns = await _getActionRuns();
 
 	for (const action of actionRuns) {
@@ -165,7 +165,7 @@ export async function rerunAction(issueNumber) {
 			&& actionTarget 
 			&& actionTarget.number === issueNumber
 		) {
-			console.log(`      Rerunning action run id: ${action.id}`);
+			core.debug(`      Rerunning action run id: ${action.id}`);
 			await _rerunWorkflow(action.id);
 		}
 	}
