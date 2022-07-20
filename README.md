@@ -20,15 +20,12 @@ jobs:
     name: Checks for blocking issues
     
     steps: 
-      - uses: Levi-Lesches/blocking-issues@v1
+      - uses: Levi-Lesches/blocking-issues@v2
         with: 
-          # Optional: Configure the label applied to blocked issues
-          # NOTE: Changing these values after the bot has been deployed may result in undefined 
-          # behavior as the bot will be unable to find blocked issues. Be sure to change the settings
-          # in the GitHub UI for the existing label first before changing here. 
-          label-name: blocked
-          label-color: 000000
-          label-description: This PR is waiting for one or more issues to be closed.
+          # Optional: Choose an existing label to use instead of creating a new one.
+          # If the label cannot be found, the default one will be created and used.
+          # The default is: "blocked" (black).
+          use-label: "blocked issue"
 ```
 
 This action will not re-block a PR if the issue is reopened, and will throw an error if the issue cannot be found. Simply edit the PR description to re-run the bot. For a demonstration, see the issues and pull requests under https://github.com/Levi-Lesches/blocking-issues-test.
