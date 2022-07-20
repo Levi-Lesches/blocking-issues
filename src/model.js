@@ -1,80 +1,87 @@
-const github = require("./github.js");
-const utils = require("./utils.js");
+import * as core from "@actions/core";
+import * as github from "./github.js";
+import * as utils from "./utils.js";
 
-async function getCurrentIssue() {
+export async function getCurrentIssue() {
 	return await github.getIssue(await github.getCurrentIssueNumber());
 }
 
-async function initLabels() {
-	console.log("Getting labels");
+export async function initLabel() {
+	core.info("Initializing labels...");
+
+	// Get inputs.
 	const labels = await github.getLabels();
-	var hasBlockedLabel = false;
-	for (label of labels) {
-		if (label.name === utils.blockedLabel.name) hasBlockedLabel = true;
+	const preferredName = core.getInput("use-label");
+	core.debug(`User prefers to use the "${preferredName}" label`);
+
+	// Discover labels.
+	let preferredLabel, defaultLabel;
+	for (const existingLabel of labels) {
+		if (existingLabel.name === preferredName) preferredLabel = existingLabel;
+		if (existingLabel.name === utils.defaultLabel.name) defaultLabel = existingLabel;
 	}
-	if (!hasBlockedLabel) {
-		console.log("Creating label");
-		await github.createLabel(utils.blockedLabel);
+
+	// Choose label, creating it if necessary.
+	let label = preferredLabel ?? defaultLabel;
+	if (label === null) {
+		core.info("No label found. Creating default label.");
+		github.createLabel(utils.defaultLabel);
+		label = utils.defaultLabel;
 	}
+
+	core.debug(`Using label: "${label.name}"`);
+	return label;
 }
 
-async function update(pr) {
-	console.log(`Processing #${pr.number}`);
-	const blockingIssueNumbers = utils.getBlockingIssues(pr.body);
-	if (blockingIssueNumbers.length == 0) {
-		console.log("No blocking issues -- removing comment and label");
-		await github.removeLabel(pr.number, utils.blockedLabel.name);
+export async function update(issue) {
+	core.info(`Processing #${issue.number}`);
+	const label = await initLabel();
+	const blockingIssueNumbers = utils.parseBlockingIssues(issue.body);
 
-		// If comment is present, remove it
-		const oldComment = await github.getCommentID(pr.number);
-		if (oldComment) {
-			await github.deleteComment(oldComment);
-		}
-		
+	if (blockingIssueNumbers.length == 0) {
+		core.info("No blocking issues -- removing comment and label");
+		try {
+			await github.removeLabel(issue.number, label);
+			core.debug("Removed label");
+			// If comment is present, remove it
+			const oldComment = await github.getCommentID(issue.number);
+			if (oldComment) await github.deleteComment(oldComment);
+			core.debug("Removed comment");
+		} catch (error) { /* No action needed if issue is not already blocked. */}
 		return;
 	}
 
-	console.log(`PR is blocked by ${blockingIssueNumbers}`);
+	core.info(`#${issue.number} is blocked by ${blockingIssueNumbers}`);
 	let openIssues = [], brokenIssues = [];
-	for (issueNumber of blockingIssueNumbers) {
-		const issue = await github.getIssue(issueNumber);
-		if (issue === null) brokenIssues.push(issueNumber);
-		else if (issue.state === "open") openIssues.push(issueNumber);
+	for (const issueNumber of blockingIssueNumbers) {
+		const otherIssue = await github.getIssue(issueNumber);
+		if (otherIssue === null) brokenIssues.push(issueNumber);
+		else if (otherIssue.state === "open") openIssues.push(issueNumber);
 	}
-	console.log(`PR needs these issues to be closed: ${openIssues}`);
-	console.warn(`The following issues could not be found: ${brokenIssues}`);
+	if (openIssues.length > 0) core.debug(`These issues are still open: ${openIssues}`); 
 
-	console.log("Writing comment");
+	core.info("Writing comment...");
 	const commentText = utils.getCommentText(blockingIssueNumbers, openIssues, brokenIssues);
-	await github.writeComment(pr.number, commentText);
-	console.log("Comment written");
+	await github.writeComment(issue.number, commentText);
 
+	core.info("Updating label...");
 	const isBlocked = openIssues.length > 0;
-	console.log(`Applying label? ${isBlocked}`);
-	if (isBlocked) await github.applyLabel(pr.number, utils.blockedLabel.name);
-	else await github.removeLabel(pr.number, utils.blockedLabel.name);
+	if (isBlocked) await github.applyLabel(issue.number, label.name);
+	else await github.removeLabel(issue.number, label.name);
 
-	return openIssues.length == 0;
+	return isBlocked;
 }
 
-async function unblockPRs(issueNumber) {
-	console.log("Going through all blocked issues");
-	const blockedPRs = await github.getBlockedPRs();
-	for (pr of blockedPRs) {
-		// await update(pr);
-		console.log(`Processing #${pr.number}`);
-		blockingIssues = utils.getBlockingIssues(pr.body);
-		console.log(`  PR is blocked by ${blockingIssues}`);
+export async function unblockPRs(issueNumber) {
+	core.info(`Unblocking issues blocked by #${issueNumber}...`);
+	const label = await initLabel();
+	const blockedPRs = await github.getIssuesWithLabel(label);
+	for (const pr of blockedPRs) {
+		core.debug(`Parsing #${pr.number} for blocking issues`);
+		const blockingIssues = utils.parseBlockingIssues(pr.body);
 		if (!blockingIssues.includes(issueNumber)) continue;
-		console.log("  Rerunning action on PR");
+		core.info(`Updating ${pr.number}`);
 		if (github.isPR(pr)) await github.rerunAction(pr.number);  // only works on prs
 		else await update(pr);  // works on prs and issues
 	}
-}
-
-module.exports = {
-	initLabels,
-	getCurrentIssue,
-	update,
-	unblockPRs,
 }

@@ -1,17 +1,17 @@
-const core = require('@actions/core');
-const github = require('@actions/github');
-const utils = require("./utils.js");
+import * as core from "@actions/core";
+import * as github from "@actions/github";
+import * as utils from "./utils.js";
 
 const token = core.getInput("token");
 const octokit = github.getOctokit(token);
 
-function getCurrentIssueNumber() {
+export function getCurrentIssueNumber() {
 	return github.context.issue.number;
 }
 
-function isPR(issue) { return "pull_request" in issue; }
+export function isPR(issue) { return "pull_request" in issue; }
 
-async function getLabels() {
+export async function getLabels() {
 	var json = await octokit.rest.issues.listLabelsForRepo({
 		owner: github.context.repo.owner,
 		repo: github.context.repo.repo,
@@ -19,17 +19,27 @@ async function getLabels() {
 	return json.data;
 }
 
-async function createLabel(label) {
+export async function createLabel(label) {
 	await octokit.rest.issues.createLabel({
 		owner: github.context.repo.owner,
 		repo: github.context.repo.repo,
 		name: label.name,
 		description: label.description,
 		color: label.color,
-	})
+	});
 }
 
-async function getIssue(number) {
+export async function getIssuesWithLabel(label) {
+	const json = await octokit.rest.issues.listForRepo({
+		owner: github.context.repo.owner,
+		repo: github.context.repo.repo,
+		state: "open",
+		labels: label.name,
+	});
+	return json.data;
+}
+
+export async function getIssue(number) {
 	try {
 		var json = await octokit.rest.issues.get({
 			owner: github.context.repo.owner,
@@ -38,7 +48,7 @@ async function getIssue(number) {
 		});
 		return json.data;
 	} catch (error) {  // RequestError
-		if (error.status === 404) {
+		if (error.status === 404 || error.status === 410) {
 			core.setFailed(`Issue not found: #${number}`);
 			return null;  // the invalid reference will be in the comment
 		} else {
@@ -47,7 +57,7 @@ async function getIssue(number) {
 	}
 }
 
-async function getComments(issueNumber) {
+export async function getComments(issueNumber) {
 	var json = await octokit.rest.issues.listComments({
 		owner: github.context.repo.owner,
 		repo: github.context.repo.repo,
@@ -56,7 +66,7 @@ async function getComments(issueNumber) {
 	return json.data;
 }
 
-async function rewriteComment(id, text) {
+export async function rewriteComment(id, text) {
 	await octokit.rest.issues.updateComment({
 		owner: github.context.repo.owner,
 		repo: github.context.repo.repo,
@@ -65,7 +75,7 @@ async function rewriteComment(id, text) {
 	});
 }
 
-async function deleteComment(id) {
+export async function deleteComment(id) {
 	await octokit.rest.issues.deleteComment({
 		owner: github.context.repo.owner,
 		repo: github.context.repo.repo,
@@ -73,19 +83,19 @@ async function deleteComment(id) {
 	});
 }
 
-async function getCommentID(issueNumber) {
-	comments = await getComments(issueNumber);
-	for (comment of comments) {
+export async function getCommentID(issueNumber) {
+	const comments = await getComments(issueNumber);
+	for (const comment of comments) {
 		if (comment.body.endsWith(utils.signature)) {
 			return comment.id;
 		}
 	}
 }
 
-async function writeComment(issueNumber, text) {
+export async function writeComment(issueNumber, text) {
 	const id = await getCommentID(issueNumber);
 	if (id) {
-		console.log(`Found old comment (id ${comment.id}). Updating...`);
+		core.info(`Found old comment (id ${id}). Updating...`);
 		return await rewriteComment(id, text);
 	} else {
 		await octokit.rest.issues.createComment({
@@ -97,48 +107,25 @@ async function writeComment(issueNumber, text) {
 	}
 }
 
-async function applyLabel(issueNumber, label) {
+export async function applyLabel(issueNumber, label) {
 	await octokit.rest.issues.addLabels({
 		owner: github.context.repo.owner,
 		repo: github.context.repo.repo,
 		issue_number: issueNumber,
 		labels: [label]
-  });
+	});
 }
 
-async function getLabelsForPR(issueNumber) {
-	const json = await octokit.rest.issues.listLabelsOnIssue({
+export async function removeLabel(issueNumber, label) {
+	return await octokit.rest.issues.removeLabel({
 		owner: github.context.repo.owner,
 		repo: github.context.repo.repo,
 		issue_number: issueNumber,
+		name: label
 	});
-	return json.data;
 }
 
-async function removeLabel(issueNumber, label) {
-	for (otherLabel of await getLabelsForPR(issueNumber)) {
-		if (otherLabel.name == label) {
-			return await octokit.rest.issues.removeLabel({
-				owner: github.context.repo.owner,
-				repo: github.context.repo.repo,
-				issue_number: issueNumber,
-				name: label
-		  });
-		}
-	}
-}
-
-async function getBlockedPRs() {
-	const json = await octokit.rest.issues.listForRepo({
-		owner: github.context.repo.owner,
-		repo: github.context.repo.repo,
-		state: "open",
-		labels: utils.blockedLabel.name,
-	});
-	return json.data;
-}
-
-async function _getPR(number) {
+export async function _getPR(number) {
 	const json = await octokit.rest.pulls.get({
 		owner: github.context.repo.owner,
 		repo: github.context.repo.repo,
@@ -147,7 +134,7 @@ async function _getPR(number) {
 	return json.data;
 }
 
-async function _getActionRuns() {
+export async function _getActionRuns() {
 	const json = await octokit.rest.actions.listWorkflowRunsForRepo({
 		owner: github.context.repo.owner,
 		repo: github.context.repo.repo,
@@ -155,53 +142,31 @@ async function _getActionRuns() {
 	return json.data.workflow_runs;
 }
 
-async function _rerunWorkflow(id) {
+export async function _rerunWorkflow(id) {
 	await octokit.rest.actions.reRunWorkflow({
 		owner: github.context.repo.owner,
 		repo: github.context.repo.repo,
-	  run_id: id,
+		run_id: id,
 	});
 }
 
-async function rerunAction(issueNumber) {
-	console.log(`    Getting PR #${issueNumber}`);
+export async function rerunAction(issueNumber) {
+	core.debug(`    Getting PR #${issueNumber}`);
 	const pr = await _getPR(issueNumber);
 
 	const branch = pr.head.ref;
-	console.log(`      Re-running most recent action on ${branch}`);
+	core.info(`      Re-running most recent action on ${branch}`);
 	const actionRuns = await _getActionRuns();
 
-	for (action of actionRuns) {
+	for (const action of actionRuns) {
 		const actionTarget = action.pull_requests [0];
 		if (
 			action.name == "Blocking Issues" 
 			&& actionTarget 
 			&& actionTarget.number === issueNumber
 		) {
-			console.log(`      Rerunning action run id: ${action.id}`);
+			core.debug(`      Rerunning action run id: ${action.id}`);
 			await _rerunWorkflow(action.id);
 		}
 	}
-}
-
-module.exports = {
-	// Issues
-	getCurrentIssueNumber,
-	getIssue,
-	isPR,
-
-	// labels
-	getLabels,
-	createLabel,
-	applyLabel,
-	removeLabel,
-	getBlockedPRs,
-	getLabelsForPR,
-
-	// comments
-	deleteComment,
-	getCommentID,
-	writeComment,
-
-	rerunAction,
 }

@@ -1,35 +1,32 @@
-const core = require('@actions/core');
+const regex = /blocked by:? ([#\d, ]+)/ig;
 
-regex = /blocked by:? ([#\d, ]+)/ig
+export const signature = "This comment was automatically written by the [Blocking Issues](https://github.com/Levi-Lesches/blocking-issues) bot, and this PR will be monitored for further progress.";
+export const defaultLabel = {
+	name: "blocked",
+	color: "000000",
+	description: "Waiting for another PR/issue to be merged/closed.",
+};
 
-const signature = "This comment was automatically written by the [Blocking Issues](https://github.com/Levi-Lesches/blocking-issues) bot, and this PR will be monitored for further progress.";
-
-const blockedLabel = {
-	name: core.getInput("label-name"),
-	color: String(core.getInput("label-color")),  // user may enter a hex code without quotes
-	description: core.getInput("label-description"),
-}
-
-function getBlockingIssues(body) {
-	issues = [];
+export function parseBlockingIssues(body) {
+	const issues = [];
 	if (body === null) return issues;
-	for (match of body.matchAll(regex)) {
-		for (issue of match [1].split(", ")) {
-			issueNumber = parseInt(issue.substring(1));
+	for (const match of body.matchAll(regex)) {
+		for (const issue of match [1].split(", ")) {
+			const issueNumber = parseInt(issue.substring(1));
 			issues.push(issueNumber);
 		}
 	}
 	return issues;
 }
 
-function getCommentText(blockingIssues, openIssues, brokenIssues) {
+export function getCommentText(blockingIssues, openIssues, brokenIssues) {
 	let status = "Ready to merge :heavy_check_mark:";
 	if (brokenIssues.length > 0) status = "Error :warning:";
 	else if (openIssues.length > 0) status = "Blocked :x:";
 	var result = "";
 	result += `# Status: ${status}\n`;
 	result += "### Issues blocking this PR: \n";
-	for (issue of blockingIssues) {
+	for (const issue of blockingIssues) {
 		let symbol = ":heavy_check_mark:";
 		if (openIssues.includes(issue)) symbol = ":x:";
 		else if (brokenIssues.includes(issue)) symbol = ":warning: Issue/PR not found";
@@ -39,5 +36,3 @@ function getCommentText(blockingIssues, openIssues, brokenIssues) {
 	result += signature;
 	return result;
 }
-
-module.exports = {getBlockingIssues, getCommentText, signature, blockedLabel}
