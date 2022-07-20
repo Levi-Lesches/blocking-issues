@@ -10,6 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/Levi-Lesches/blocking-issues.git"
   },
+  "type":"module",
   "keywords": [],
   "author": "",
   "license": "ISC",
