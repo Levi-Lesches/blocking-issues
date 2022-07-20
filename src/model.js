@@ -57,7 +57,7 @@ export async function update(issue) {
 		else if (otherIssue.state === "open") openIssues.push(issueNumber);
 	}
 	core.debug(`These issues are still open: ${openIssues}`); 
-	core.warn(`These issues could not be found: ${brokenIssues}`);
+	core.warning(`These issues could not be found: ${brokenIssues}`);
 
 	core.info("Writing comment...");
 	const commentText = utils.getCommentText(blockingIssueNumbers, openIssues, brokenIssues);
