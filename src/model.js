@@ -51,7 +51,7 @@ export async function update(issue) {
 
 	core.info(`#${issue} is blocked by ${blockingIssueNumbers}`);
 	let openIssues = [], brokenIssues = [];
-	for (issueNumber of blockingIssueNumbers) {
+	for (const issueNumber of blockingIssueNumbers) {
 		const otherIssue = await github.getIssue(issueNumber);
 		if (otherIssue === null) brokenIssues.push(issueNumber);
 		else if (otherIssue.state === "open") openIssues.push(issueNumber);
@@ -75,7 +75,7 @@ export async function unblockPRs(issueNumber) {
 	core.info(`Unblocking issues blocked by #${issueNumber}...`);
 	const blockedPRs = await github.getBlockedPRs();
 	core.debug(`The following issues are blocked: ${blockedPRs}`);
-	for (pr of blockedPRs) {
+	for (const pr of blockedPRs) {
 		blockingIssues = utils.parseBlockingIssues(pr.body);
 		if (!blockingIssues.includes(issueNumber)) continue;
 		core.info(`Updating ${pr.number}`);
