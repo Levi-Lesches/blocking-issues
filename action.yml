@@ -5,18 +5,10 @@ inputs:
     description: "The GitHub token to use. Make sure to use a Personal Access Token, so PRs can be updated." 
     required: false
     default: ${{ github.token }}
-  label-name:
-    description: "The name of the label that will be added to blocked issues and pull requests."
-    required: false
-    default: "blocked"
-  label-description: 
-    description: "The description of the label added to blocked issues and pull requests."
-    required: false
-    default: "This PR is waiting for one or more issues to be closed."
-  label-color: 
-    description: "The color of the label added to blocked issues and pull requests."
-    required: false
-    default: "000000"
+  use-label: 
+    description: "The name of the label to apply to blocked issues or pull requests. If not found, the default value will be used.",
+    required: false,
+    default: "blocked",
 branding: 
   icon: "git-pull-request"
   color: "red"

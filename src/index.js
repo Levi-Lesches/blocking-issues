@@ -3,25 +3,18 @@ const model = require('./model.js');
 
 async function main() {
 	try {
-		console.log("Initializing labels");
-		await model.initLabels();
-
-		console.log("Getting issue");
+		core.info("Getting current issue...");
 		const issue = await model.getCurrentIssue();
-		console.log(issue);
+		core.debug(issue);
 
 		if (issue.state === 'open') {
-			console.log("Analyzing current issue/PR");
 			const isReady = await model.update(issue);
 
-			if (isReady == false)  // undefined means no blocking issues
-				core.setFailed("PR is blocked")
-			else if (isReady == undefined) 
-				console.log("No blocking issues found.")
-			else if (isReady == true) 
-				console.log("All blocking issues have been closed")
+			if (isReady === undefined) core.info("No blocking issues found."); 
+			else if (isReady === false) core.setFailed("Issue/PR is blocked.")
+			else if (isReady === true) core.info("Issue/PR is not blocked.")
 		} else {
-			console.log("Issue is closed. Checking for blocked PRs");
+			core.info("Issue is closed. Unblocking other issues...");
 			await model.unblockPRs(issue.number);
 		}
 	} catch (error) {

@@ -1,16 +1,15 @@
 const core = require('@actions/core');
 
-regex = /blocked by:? ([#\d, ]+)/ig
+const regex = /blocked by:? ([#\d, ]+)/ig
 
-const signature = "This comment was automatically written by the [Blocking Issues](https://github.com/Levi-Lesches/blocking-issues) bot, and this PR will be monitored for further progress.";
-
-const blockedLabel = {
-	name: core.getInput("label-name"),
-	color: String(core.getInput("label-color")),  // user may enter a hex code without quotes
-	description: core.getInput("label-description"),
+export const signature = "This comment was automatically written by the [Blocking Issues](https://github.com/Levi-Lesches/blocking-issues) bot, and this PR will be monitored for further progress.";
+export const defaultLabel = {
+	name: "blocked",
+	color: "000000",
+	description: "Waiting for another PR/issue to be merged/closed.",
 }
 
-function getBlockingIssues(body) {
+export function parseBlockingIssues(body) {
 	issues = [];
 	if (body === null) return issues;
 	for (match of body.matchAll(regex)) {
@@ -22,7 +21,7 @@ function getBlockingIssues(body) {
 	return issues;
 }
 
-function getCommentText(blockingIssues, openIssues, brokenIssues) {
+export function getCommentText(blockingIssues, openIssues, brokenIssues) {
 	let status = "Ready to merge :heavy_check_mark:";
 	if (brokenIssues.length > 0) status = "Error :warning:";
 	else if (openIssues.length > 0) status = "Blocked :x:";
@@ -39,5 +38,3 @@ function getCommentText(blockingIssues, openIssues, brokenIssues) {
 	result += signature;
 	return result;
 }
-
-module.exports = {getBlockingIssues, getCommentText, signature, blockedLabel}

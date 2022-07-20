@@ -106,26 +106,13 @@ async function applyLabel(issueNumber, label) {
   });
 }
 
-async function getLabelsForPR(issueNumber) {
-	const json = await octokit.rest.issues.listLabelsOnIssue({
+async function removeLabel(issueNumber, label) {
+	return await octokit.rest.issues.removeLabel({
 		owner: github.context.repo.owner,
 		repo: github.context.repo.repo,
 		issue_number: issueNumber,
-	});
-	return json.data;
-}
-
-async function removeLabel(issueNumber, label) {
-	for (otherLabel of await getLabelsForPR(issueNumber)) {
-		if (otherLabel.name == label) {
-			return await octokit.rest.issues.removeLabel({
-				owner: github.context.repo.owner,
-				repo: github.context.repo.repo,
-				issue_number: issueNumber,
-				name: label
-		  });
-		}
-	}
+		name: label
+  });
 }
 
 async function getBlockedPRs() {
@@ -196,7 +183,6 @@ module.exports = {
 	applyLabel,
 	removeLabel,
 	getBlockedPRs,
-	getLabelsForPR,
 
 	// comments
 	deleteComment,
