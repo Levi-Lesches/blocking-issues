@@ -29,7 +29,7 @@ export async function initLabel() {
 		label = utils.defaultLabel;
 	}
 
-	core.debug(`Using label: ${label.name}`);
+	core.debug(`Using label: "${label.name}"`);
 	return label;
 }
 
@@ -49,15 +49,15 @@ export async function update(issue) {
 		return;
 	}
 
-	core.info(`#${issue} is blocked by ${blockingIssueNumbers}`);
+	core.info(`#${issue.number} is blocked by ${blockingIssueNumbers}`);
 	let openIssues = [], brokenIssues = [];
 	for (const issueNumber of blockingIssueNumbers) {
 		const otherIssue = await github.getIssue(issueNumber);
 		if (otherIssue === null) brokenIssues.push(issueNumber);
 		else if (otherIssue.state === "open") openIssues.push(issueNumber);
 	}
-	core.debug(`These issues are still open: ${openIssues}`); 
-	core.warning(`These issues could not be found: ${brokenIssues}`);
+	if (openIssues.length > 0) core.debug(`These issues are still open: ${openIssues}`); 
+	if (brokenIssues.length > 0) core.warning(`These issues could not be found: ${brokenIssues}`);
 
 	core.info("Writing comment...");
 	const commentText = utils.getCommentText(blockingIssueNumbers, openIssues, brokenIssues);
@@ -65,8 +65,8 @@ export async function update(issue) {
 
 	core.info("Updating label...");
 	const isBlocked = openIssues.length > 0;
-	if (isBlocked) await github.applyLabel(issue.number, utils.blockedLabel.name);
-	else await github.removeLabel(issue.number, utils.blockedLabel.name);
+	if (isBlocked) await github.applyLabel(issue.number, label.name);
+	else await github.removeLabel(issue.number, label.name);
 
 	return isBlocked;
 }
