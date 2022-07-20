@@ -1,5 +1,5 @@
-const core = require('@actions/core');
-const model = require('./model.js');
+import * as core from "@actions/core";
+import * as model from "./model.js";
 
 async function main() {
 	try {
