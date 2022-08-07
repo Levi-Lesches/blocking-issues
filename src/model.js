@@ -23,7 +23,7 @@ export async function initLabel() {
 
 	// Choose label, creating it if necessary.
 	let label = preferredLabel ?? defaultLabel;
-	if (label === null) {
+	if (label == null) {
 		core.info("No label found. Creating default label.");
 		github.createLabel(utils.defaultLabel);
 		label = utils.defaultLabel;
