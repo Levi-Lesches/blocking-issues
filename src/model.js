@@ -58,7 +58,7 @@ export async function update(issue) {
 		if (otherIssue === null) brokenIssues.push(issueNumber);
 		else if (otherIssue.state === "open") openIssues.push(issueNumber);
 	}
-	if (openIssues.length > 0) core.debug(`These issues are still open: ${openIssues}`); 
+	if (openIssues.length > 0) core.debug(`These issues are still open: ${openIssues}`);
 
 	core.info("Writing comment...");
 	const commentText = utils.getCommentText(blockingIssueNumbers, openIssues, brokenIssues);
@@ -66,8 +66,16 @@ export async function update(issue) {
 
 	core.info("Updating label...");
 	const isBlocked = openIssues.length > 0;
-	if (isBlocked) await github.applyLabel(issue.number, label.name);
-	else await github.removeLabel(issue.number, label.name);
+	core.info(`Is blocked? ${isBlocked}`);
+	if (isBlocked) {
+		await github.applyLabel(issue.number, label.name);
+	} else {
+		try {
+			await github.removeLabel(issue.number, label.name);
+		} catch {
+			// No action needed if issue is not already blocked.
+		}
+	}
 
 	return isBlocked;
 }

@@ -161,8 +161,8 @@ export async function rerunAction(issueNumber) {
 	for (const action of actionRuns) {
 		const actionTarget = action.pull_requests [0];
 		if (
-			action.name == "Blocking Issues" 
-			&& actionTarget 
+			action.name == "Blocking Issues"
+			&& actionTarget
 			&& actionTarget.number === issueNumber
 		) {
 			core.debug(`      Rerunning action run id: ${action.id}`);
