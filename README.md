@@ -54,4 +54,4 @@ A future version of the action may allow you to specify your own regex, but for 
 const regex = /blocked[-| ]by:? ((?:#\d+)(?:[, ] ?#\d+)*)/ig;
 ```
 
-It looks complicated but allows many expressions. Check out [the Regexr tests](regexr.com/8ag1q) for details.
+It looks complicated but allows many expressions. Check out [the Regexr tests](https://regexr.com/8ag1q) for details.
