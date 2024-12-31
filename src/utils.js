@@ -13,6 +13,7 @@ export function parseBlockingIssues(body) {
 	for (const match of body.matchAll(regex)) {
 		for (const issue of match [1].split(", ")) {
 			const issueNumber = parseInt(issue.substring(1));
+			if (isNaN(issueNumber)) continue;
 			issues.push(issueNumber);
 		}
 	}
