@@ -1,4 +1,4 @@
-const regex = /blocked by:? ([#\d, ]+)/ig;
+const regex = /blocked[-| ]by:? ((?:#\d+)(?:[, ] ?#\d+)*)/ig;
 
 export const signature = "This comment was automatically written by the [Blocking Issues](https://github.com/Levi-Lesches/blocking-issues) bot, and this PR will be monitored for further progress.";
 export const defaultLabel = {
@@ -13,6 +13,7 @@ export function parseBlockingIssues(body) {
 	for (const match of body.matchAll(regex)) {
 		for (const issue of match [1].split(", ")) {
 			const issueNumber = parseInt(issue.substring(1));
+			if (isNaN(issueNumber)) continue;
 			issues.push(issueNumber);
 		}
 	}
